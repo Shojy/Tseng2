@@ -1,15 +1,22 @@
-﻿
+﻿@using Tseng.Services
+@inject ICounterService CounterService
+
 <h1>Counter</h1>
 
-<p>Current count: @currentCount</p>
+<p>Current count: @CounterService.Count</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
-    private int currentCount = 0;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        CounterService.PropertyChanged += async (_, _) => await InvokeAsync(StateHasChanged);
+    }
 
     private void IncrementCount()
     {
-        currentCount++;
+        CounterService.Count++;
     }
 }

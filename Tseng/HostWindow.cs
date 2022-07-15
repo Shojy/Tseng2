@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
-using Microsoft.Extensions.DependencyInjection;
+using Tseng.Startup;
 
 namespace Tseng
 {
@@ -11,13 +11,11 @@ namespace Tseng
 
             var services = new ServiceCollection();
             services.AddWindowsFormsBlazorWebView();
+            services.RegisterServices();
 
-            BlazorView.HostPage = "wwwroot\\index.html";
+            BlazorView.HostPage = "wwwroot\\app.html";
             BlazorView.Services = services.BuildServiceProvider();
             BlazorView.RootComponents.Add<App>("#app");
-            
-            this.BackColor = Color.FromArgb(255, 128, 0);
-            this.TransparencyKey = Color.FromArgb(255, 128, 0);
 
             BlazorView.SetDefaultBackgroundColor(Color.Transparent);
         }

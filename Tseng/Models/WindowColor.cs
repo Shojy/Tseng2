@@ -1,17 +1,16 @@
 ﻿namespace Tseng.Models;
 
-public struct WindowColor
+public record struct WindowColor(Color TopLeft, Color TopRight, Color BottomLeft, Color BottomRight)
 {
-    public Color TopLeft { get; set; }
+    public static WindowColor Default { get; } = new(
+        Color.FromArgb(0, 0, 176),
+        Color.FromArgb(0, 0, 80),
+        Color.FromArgb(0, 0, 128),
+        Color.FromArgb(0, 0, 32)
+        );
 
-    public Color TopRight { get; set; }
+    public Color Average => GetAverageColor();
 
-    public Color BottomLeft { get; set; }
-
-    public Color BottomRight { get; set; }
-
-    private Color? _color;
-    public Color Average => _color ??= GetAverageColor();
     
     /// <summary>
     /// Calculates the average color from the 4 positional colors. 
@@ -27,7 +26,7 @@ public struct WindowColor
     }
 
     /// <summary>
-    /// Uses a 
+    /// Uses a squared mean to calculate the average colour
     /// </summary>
     /// <param name="values"></param>
     /// <returns></returns>

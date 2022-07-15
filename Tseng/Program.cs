@@ -1,3 +1,5 @@
+using Tseng.Startup;
+
 namespace Tseng
 {
     internal static class Program
@@ -6,12 +8,31 @@ namespace Tseng
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            StartWebHost();
+
             ApplicationConfiguration.Initialize();
             Application.Run(new HostWindow());
+        }
+
+        private static void StartWebHost()
+        {
+            var builder = WebApplication.CreateBuilder(new WebApplicationOptions());
+            builder.Services.AddRazorPages();
+            builder.Services.AddServerSideBlazor();
+            builder.Services.RegisterServices();
+
+            var app = builder.Build();
+            app.Urls.Add("http://localhost:7777");
+
+            app.UseStaticFiles();
+            app.UseRouting();
+
+            app.MapBlazorHub();
+            app.MapFallbackToPage("/_Host");
+
+            app.RunAsync();
         }
     }
 }
