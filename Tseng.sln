@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32611.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tseng", "Tseng\Tseng.csproj", "{9FF52CCB-F9D7-4847-B1F3-60726B7EBBBD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shojy.FF7.Reno", "Shojy.FF7.Reno\Shojy.FF7.Reno.csproj", "{EBF61978-3011-4B7C-9EBD-EA65E96A430B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9FF52CCB-F9D7-4847-B1F3-60726B7EBBBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FF52CCB-F9D7-4847-B1F3-60726B7EBBBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FF52CCB-F9D7-4847-B1F3-60726B7EBBBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBF61978-3011-4B7C-9EBD-EA65E96A430B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBF61978-3011-4B7C-9EBD-EA65E96A430B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBF61978-3011-4B7C-9EBD-EA65E96A430B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBF61978-3011-4B7C-9EBD-EA65E96A430B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

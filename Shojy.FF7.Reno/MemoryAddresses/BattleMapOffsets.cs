@@ -1,0 +1,7 @@
+﻿namespace Shojy.FF7.Reno.MemoryAddresses;
+
+public static class BattleMapOffsets
+{
+    public const int PartyActors = 0x0;
+    public const int EnemyActors = 0x1A0;
+}
