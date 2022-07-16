@@ -10,10 +10,10 @@ namespace Tseng
         [STAThread]
         private static void Main()
         {
-            StartWebHost();
-
+            Task.Run(StartWebHost);
             ApplicationConfiguration.Initialize();
             Application.Run(new HostWindow());
+            
         }
 
         private static void StartWebHost()
@@ -27,12 +27,13 @@ namespace Tseng
             app.Urls.Add("http://localhost:7777");
 
             app.UseStaticFiles();
-            app.UseRouting();
+            app.UseRouting()
+                ;
 
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");
 
-            app.RunAsync();
+            app.Run();
         }
     }
 }
