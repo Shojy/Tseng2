@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Shojy.FF7.Reno.MemoryAddresses.Offsets;
+using Shojy.FF7.Reno.Models.Enums;
 
 namespace Shojy.FF7.Reno.Models;
 
@@ -61,7 +62,7 @@ public struct CharacterRecord
     [FieldOffset(CharacterOffsets.LevelProgress)] 
     public readonly byte LevelProgress;
     [FieldOffset(CharacterOffsets.LimitBreaks)] 
-    public readonly ushort LimitMask;
+    public readonly LimitBreaksLearned LimitMask;
     [FieldOffset(CharacterOffsets.NumberOfKills)] 
     public readonly ushort Kills;
     [FieldOffset(CharacterOffsets.LimitLevel1Uses)] 
