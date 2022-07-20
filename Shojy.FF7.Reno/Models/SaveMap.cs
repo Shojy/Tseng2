@@ -148,4 +148,7 @@ public readonly partial record  struct SaveMap
 
     [FieldOffset(SaveMapOffsets.UltimateWeaponHp)]
     public readonly Int24 UltimateWeaponHP;
+
+    [FieldOffset(SaveMapOffsets.KeyItems)] 
+    public readonly KeyItems KeyItems;
 }
