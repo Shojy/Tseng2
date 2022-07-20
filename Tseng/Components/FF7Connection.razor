@@ -1,0 +1,115 @@
+﻿@using Shojy.FF7.Reno
+@using Shojy.FF7.Reno.Models
+@using Shojy.FF7.Elena
+@using Shojy.FF7.Elena.Equipment
+@using Shojy.FF7.Elena.Items
+@using Shojy.FF7.Elena.Sections
+@inject IFF7InteractionService InteractionService;
+
+@if (IsLoading)
+{
+    <p>Connecting to game...</p>
+}
+else
+{
+    foreach (var p in Party)
+    {
+        <p>@p</p>
+
+    }
+    @Updated.ToString()
+
+    <div style="height: 500px; overflow-y: auto;">
+        <ul>
+            @foreach (var item in SaveMap.Items)
+            {
+                string name = string.Empty;
+                if (item.ItemId < 128)
+                {
+                    name = _items[item.ItemId].Name;
+                }
+                else if (item.ItemId < 256)
+                {
+                    name = _weapons[item.ItemId - 128].Name;
+                }
+                else if (item.ItemId < 288)
+                {
+                    name = _armors[item.ItemId - 256].Name;
+                }
+                else if (item.ItemId < 320)
+                {
+                    name = _accessories[item.ItemId - 288].Name;
+                }
+                
+                <li>@(item.Quantity != 127? $"{item.Quantity}x  {name}" : "")</li>
+
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    string[] Party => new[]
+    {
+        SaveMap.PartyMember1.ToString(),
+        SaveMap.PartyMember2.ToString(),
+        SaveMap.PartyMember3.ToString(),
+    };
+
+    bool IsLoading = false;
+    SaveMap SaveMap;
+    BattleMap BattleMap;
+
+    Item[] _items;
+    Weapon[] _weapons;
+    Armor[] _armors;
+    Accessory[] _accessories;
+    bool Updated = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        await InteractionService.ConnectToGame();
+
+        var ff7Folder = Path.GetDirectoryName(InteractionService.FF7.MainModule!.FileName);
+
+        var path = Path.Combine(ff7Folder!, "data", "lang-en", "kernel");
+
+        // Read Kernel Data
+        var elena = new KernelReader(Path.Combine(path, "KERNEL.BIN"))
+            .MergeKernel2Data(Path.Combine(path, "kernel2.bin"));
+
+
+        _items = elena.ItemData.Items;
+        _weapons = elena.WeaponData.Weapons;
+        _armors = elena.ArmorData.Armors;
+        _accessories = elena.AccessoryData.Accessories;
+
+        if (InteractionService.GetData(out var savemap, out var battlemap))
+        {
+            SaveMap = savemap;
+            BattleMap = battlemap;
+        }
+
+        IsLoading = false;
+        var cancellationToken = new CancellationToken();
+        await  MonitorGame(cancellationToken);
+
+    }
+
+    async Task MonitorGame(CancellationToken cancellationToken = default)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            if (InteractionService.GetData(out var savemap, out var battlemap))
+            {
+                Updated = SaveMap != savemap;
+                SaveMap = savemap;
+                BattleMap = battlemap;
+                await InvokeAsync(StateHasChanged);
+            }
+            await Task.Delay(250, cancellationToken);
+        }
+    }
+
+}

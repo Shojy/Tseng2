@@ -6,11 +6,13 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Version>2.0.0-dev</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="6.0.408" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="6.0.419" />
+    <PackageReference Include="Shojy.FF7.Elena" Version="0.3.0-pre" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +42,10 @@
     <Folder Include="Models\" />
     <Folder Include="Services\" />
     <Folder Include="Startup\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shojy.FF7.Reno\Shojy.FF7.Reno.csproj" />
   </ItemGroup>
 
 </Project>

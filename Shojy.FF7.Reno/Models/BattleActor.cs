@@ -1,10 +1,12 @@
 ﻿using System.Runtime.InteropServices;
-using Shojy.FF7.Reno.MemoryAddresses;
+using Shojy.FF7.Reno.MemoryAddresses.Offsets;
+using Shojy.FF7.Reno.Models.Enums;
 
 namespace Shojy.FF7.Reno.Models;
 
+[PublicAPI]
 [StructLayout(LayoutKind.Explicit, Size = BattleMapActorOffsets.ActorLength)]
-public struct BattleActor
+public record struct BattleActor
 {
     [FieldOffset(BattleMapActorOffsets.Status)]
     public StatusEffects Status;
