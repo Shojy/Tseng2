@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.Web.WebView2.WinForms;
 
-namespace Tseng;
+namespace Tseng.Extensions;
 
 public static class BlazorWebViewExtensions
 {

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
+using Tseng.Extensions;
 using Tseng.Startup;
 
 namespace Tseng

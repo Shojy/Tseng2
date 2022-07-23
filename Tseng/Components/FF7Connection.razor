@@ -4,9 +4,24 @@
 @using Shojy.FF7.Elena.Equipment
 @using Shojy.FF7.Elena.Items
 @using Shojy.FF7.Elena.Sections
-@inject IFF7InteractionService InteractionService;
+@using Tseng.Models
+@using Tseng.Services
+@using System.ComponentModel
+@using Shojy.FF7.Reno.Models.Enums
 
-@if (IsLoading)
+@inject IFF7InteractionService InteractionService;
+@inject IGameService GameService;
+
+<style>
+    .list {
+        height: 500px;
+        overflow-y: auto;
+        width: 300px;
+        display: inline-block;
+    }
+</style>
+
+@if (_isLoading || _gameData is null)
 {
     <p>Connecting to game...</p>
 }
@@ -17,32 +32,34 @@ else
         <p>@p</p>
 
     }
-    @Updated.ToString()
 
-    <div style="height: 500px; overflow-y: auto;">
+    <div class="list">
         <ul>
-            @foreach (var item in SaveMap.Items)
+            @foreach (var item in _gameData.Inventory)
             {
-                string name = string.Empty;
-                if (item.ItemId < 128)
+                <li>@(item.Quantity != 0 ? $"{item.Quantity}x  {item.Name}" : "")</li>
+            }
+        </ul>
+    </div>
+
+    <div class="list">
+        <ul>
+            @foreach (var item in _gameData.Materia)
+            {
+                <li>@($"{item.Type}: {item.Name}")</li>
+            }
+        </ul>
+    </div>
+
+    <div class="list">
+        <ul>
+            @foreach (var ki in Enum.GetValues<KeyItems>())
+            {
+                if (SaveMap.KeyItems.HasFlag(ki))
                 {
-                    name = _items[item.ItemId].Name;
-                }
-                else if (item.ItemId < 256)
-                {
-                    name = _weapons[item.ItemId - 128].Name;
-                }
-                else if (item.ItemId < 288)
-                {
-                    name = _armors[item.ItemId - 256].Name;
-                }
-                else if (item.ItemId < 320)
-                {
-                    name = _accessories[item.ItemId - 288].Name;
+                <li>@($"{ki.ToString()}")</li>
                 }
                 
-                <li>@(item.Quantity != 127? $"{item.Quantity}x  {name}" : "")</li>
-
             }
         </ul>
     </div>
@@ -56,60 +73,29 @@ else
         SaveMap.PartyMember3.ToString(),
     };
 
-    bool IsLoading = false;
-    SaveMap SaveMap;
-    BattleMap BattleMap;
+    bool _isLoading = false;
 
-    Item[] _items;
-    Weapon[] _weapons;
-    Armor[] _armors;
-    Accessory[] _accessories;
-    bool Updated = false;
+    SaveMap SaveMap => _gameData!.SaveMap;
+    BattleMap BattleMap => _gameData!.BattleMap;
+    GameData? _gameData;
 
+    
     protected override async Task OnInitializedAsync()
     {
-        IsLoading = true;
-        await InteractionService.ConnectToGame();
-
-        var ff7Folder = Path.GetDirectoryName(InteractionService.FF7.MainModule!.FileName);
-
-        var path = Path.Combine(ff7Folder!, "data", "lang-en", "kernel");
-
-        // Read Kernel Data
-        var elena = new KernelReader(Path.Combine(path, "KERNEL.BIN"))
-            .MergeKernel2Data(Path.Combine(path, "kernel2.bin"));
+        _isLoading = true;
+        _gameData = GameService.GameData;
+        GameService.GameData.PropertyChanged += OnGameDataOnPropertyChanged;
 
 
-        _items = elena.ItemData.Items;
-        _weapons = elena.WeaponData.Weapons;
-        _armors = elena.ArmorData.Armors;
-        _accessories = elena.AccessoryData.Accessories;
-
-        if (InteractionService.GetData(out var savemap, out var battlemap))
-        {
-            SaveMap = savemap;
-            BattleMap = battlemap;
-        }
-
-        IsLoading = false;
-        var cancellationToken = new CancellationToken();
-        await  MonitorGame(cancellationToken);
+        var tokenSource = new CancellationTokenSource();
+        
+        await GameService.StartMonitoring(tokenSource.Token);
+        _isLoading = false;
 
     }
 
-    async Task MonitorGame(CancellationToken cancellationToken = default)
+    private async void OnGameDataOnPropertyChanged(object? o, PropertyChangedEventArgs propertyChangedEventArgs)
     {
-        while (!cancellationToken.IsCancellationRequested)
-        {
-            if (InteractionService.GetData(out var savemap, out var battlemap))
-            {
-                Updated = SaveMap != savemap;
-                SaveMap = savemap;
-                BattleMap = battlemap;
-                await InvokeAsync(StateHasChanged);
-            }
-            await Task.Delay(250, cancellationToken);
-        }
+        await InvokeAsync(StateHasChanged);
     }
-
 }

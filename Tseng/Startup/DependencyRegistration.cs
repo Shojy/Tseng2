@@ -10,6 +10,7 @@ public static class DependencyRegistration
     public static IServiceCollection RegisterServices(this IServiceCollection services)
     {
         services.AddSingleton<ICounterService>(_ => Counter);
+        services.AddSingleton<IGameService, GameService>();
         services.AddReno();
         return services;
     }

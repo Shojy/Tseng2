@@ -27,8 +27,7 @@ namespace Tseng
             app.Urls.Add("http://localhost:7777");
 
             app.UseStaticFiles();
-            app.UseRouting()
-                ;
+            app.UseRouting();
 
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");
