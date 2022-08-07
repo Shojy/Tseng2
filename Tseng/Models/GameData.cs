@@ -21,6 +21,9 @@ public class GameData : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    public Accessory[] Accessories => _accessories;
+    public Armor[] Armors => _armors;
+
     public BattleMap BattleMap
     {
         get => _battleMap;
@@ -57,14 +60,7 @@ public class GameData : INotifyPropertyChanged
                     continue;
                 }
 
-                var name = item.ItemId switch
-                {
-                    < 128 => _items[item.ItemId].Name,
-                    < 256 => _weapons[item.ItemId - 128].Name,
-                    < 288 => _armors[item.ItemId - 256].Name,
-                    < 320 => _accessories[item.ItemId - 288].Name,
-                    _ => "???"
-                };
+                var name = GetItemName(item);
 
                 items.Add(new InventoryItem(item.Quantity, name));
             }
@@ -105,6 +101,8 @@ public class GameData : INotifyPropertyChanged
         }
     }
 
+    public Weapon[] Weapons => _weapons;
+
     public void Init(Item[] items, Weapon[] weapons, Armor[] armors, Accessory[] accessories, Materia[] materias)
     {
         _items = items;
@@ -129,5 +127,18 @@ public class GameData : INotifyPropertyChanged
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private string GetItemName(ItemRecord item)
+    {
+        var name = item.ItemId switch
+        {
+            < 128 => _items[item.ItemId].Name,
+            < 256 => _weapons[item.ItemId - 128].Name,
+            < 288 => _armors[item.ItemId - 256].Name,
+            < 320 => _accessories[item.ItemId - 288].Name,
+            _ => "???"
+        };
+        return name;
     }
 }
