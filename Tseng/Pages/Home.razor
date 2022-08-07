@@ -1,30 +1,107 @@
 ﻿@page "/"
-@using System.Net.Mime
+@using Tseng.Services
 @inject IJSRuntime JSRuntime
+@inject IAssetExtractionService AssetExtractionService
 
-<FF7Window Fill="true">
-    <div style="text-align:center">
-        <FF7Connection/>
-    </div>
+<style>
+    input {
+        width: 300px;
+        background: #454545;
+    }
 
-    <h2>OBS Parts</h2>
-    <hr/>
-    <label>Party List
-        <input type="text" readonly="readonly" value="http://localhost:7777/party" style="width: 600px; background: #454545"/>
+    label {
+        width: 200px;
+        display: inline-block;
+    }
+
+    .scroll-wrapper {
+        height: 100%;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        overflow: auto;
+    }
+</style>
+<div class="scroll-wrapper">
+    <FF7Window Fill="true">
+        <div style="text-align:center">
+            <FF7Connection />
+        </div>
+
+        @*<h2>Setup</h2>
+        <hr />
+        <p>
+            <button @onclick="async () => await ExtractAssets()" disabled="@_isExtracting">Extract Images</button>
+            @(_isExtracting? "Extracting..." : "")
+        </p>*@
+
+        <h2 style="margin-top: 30px;">Ready to Use OBS Components</h2>
+        <hr />
+        <label>
+            Party List
+        </label>
+        <input type="text" readonly="readonly" value="http://localhost:7777/party" />
         <button @onclick="CopyPartyLink">Copy</button>
-    </label>
-</FF7Window>
-    
+
+
+        <h2 style="margin-top: 30px;">Bits (Compose your own layout!)</h2>
+        <hr />
+        <label>
+            Window
+        </label>
+        <input type="text" readonly="readonly" value="http://localhost:7777/window" />
+        <button @onclick="CopyWindowLink">Copy</button>
+
+        <br />
+        <label>
+            Party member 1
+        </label>
+        <input type="text" readonly="readonly" value="http://localhost:7777/party/1" />
+        <button @onclick="CopyParty1Link">Copy</button>
+        <br />
+        <label>
+            Party member 2
+        </label>
+        <input type="text" readonly="readonly" value="http://localhost:7777/party/2" />
+        <button @onclick="CopyParty2Link">Copy</button>
+        <br />
+        <label>
+            Party member 3
+        </label>
+        <input type="text" readonly="readonly" value="http://localhost:7777/party/3" />
+        <button @onclick="CopyParty3Link">Copy</button>
+        <br />
+        <label>
+            Gil
+        </label>
+        <input type="text" readonly="readonly" value="http://localhost:7777/collections/gil" />
+        <button @onclick="CopyGilLink">Copy</button>
+    </FF7Window>
+</div>
+
 
 @code
 {
-    private async Task CopyPartyLink()
-    {
-        await CopyTextToClipboard("http://localhost:7777/party");
-    }
+    private async Task CopyPartyLink() => await CopyTextToClipboard("http://localhost:7777/party");
+    private async Task CopyParty1Link() => await CopyTextToClipboard("http://localhost:7777/party/1");
+    private async Task CopyParty2Link() => await CopyTextToClipboard("http://localhost:7777/party/2");
+    private async Task CopyParty3Link() => await CopyTextToClipboard("http://localhost:7777/party/3");
+    private async Task CopyGilLink() => await CopyTextToClipboard("http://localhost:7777/collections/gil");
+    private async Task CopyWindowLink() => await CopyTextToClipboard("http://localhost:7777/window");
 
     private async Task CopyTextToClipboard(string text)
     {
         await JSRuntime.InvokeVoidAsync("clipboardCopy.copyText", text);
     }
+
+    private async Task ExtractAssets()
+    {
+        if (_isExtracting) return;
+
+        _isExtracting = true;
+        await AssetExtractionService.ExtractAllAssets();
+        _isExtracting = false;
+    }
+
+    private bool _isExtracting;
 }

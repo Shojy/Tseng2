@@ -1,4 +1,5 @@
-﻿@page "/party"
+﻿@page "/party/{num:int}"
+
 @using Tseng.Models
 @using Tseng.Services
 @using System.ComponentModel
@@ -9,14 +10,22 @@
 
 @if (!_isLoading)
 {
-    <FF7Window Fill="true">
-        <CharacterProfile PartyMember="@Party1" HasData="@(Party1.Level != 0)"/>
-        <CharacterProfile PartyMember="@Party2" HasData="@(Party2.Level != 0)"/>
-        <CharacterProfile PartyMember="@Party3" HasData="@(Party3.Level != 0)"/>
-    </FF7Window>
+    switch (Num)
+    {
+        case 1:
+            <CharacterProfile PartyMember="@Party1" HasData="@(Party1.Level != 0)"/>
+            break;
+        case 2:
+            <CharacterProfile PartyMember="@Party2" HasData="@(Party2.Level != 0)"/>
+            break;
+        case 3:
+            <CharacterProfile PartyMember="@Party3" HasData="@(Party3.Level != 0)"/>
+            break;
+    }
 }
 @code {
-    
+    [Parameter] public int Num { get; set; }
+
     bool _isLoading;
     
     GameData? _gameData;

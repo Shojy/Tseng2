@@ -11,6 +11,7 @@ public static class DependencyRegistration
     {
         services.AddSingleton<ICounterService>(_ => Counter);
         services.AddSingleton<IGameService, GameService>();
+        services.AddSingleton<IAssetExtractionService, AssetExtractionService>();
         services.AddReno();
         return services;
     }

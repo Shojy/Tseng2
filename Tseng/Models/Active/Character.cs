@@ -1,4 +1,6 @@
 ﻿using Shojy.FF7.Elena.Equipment;
+using Shojy.FF7.Elena.Materias;
+using Shojy.FF7.Reno.Models.Enums;
 
 namespace Tseng.Models.Active;
 
@@ -10,10 +12,13 @@ public readonly record struct Character(
     ushort CurrentMP,
     ushort MaxMP,
     Weapon Weapon,
+    Materia[] WeaponMateria,
     Armor Armor,
+    Materia[] ArmorMateria,
     Accessory? Accessory,
     string Image,
-    string Row
+    string Row,
+    StatusEffects Status
     )
 {
     public string WeaponName => Weapon.Name;

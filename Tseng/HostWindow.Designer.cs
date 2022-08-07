@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HostWindow));
             this.BlazorView = new Microsoft.AspNetCore.Components.WebView.WindowsForms.BlazorWebView();
             this.SuspendLayout();
             // 
@@ -37,17 +38,18 @@
             this.BlazorView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.BlazorView.Location = new System.Drawing.Point(0, 0);
             this.BlazorView.Name = "BlazorView";
-            this.BlazorView.Size = new System.Drawing.Size(890, 535);
+            this.BlazorView.Size = new System.Drawing.Size(890, 559);
             this.BlazorView.TabIndex = 0;
             this.BlazorView.Text = "blazorWebView1";
             // 
             // HostWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.ClientSize = new System.Drawing.Size(890, 535);
+            this.ClientSize = new System.Drawing.Size(890, 559);
             this.Controls.Add(this.BlazorView);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(615, 300);
             this.Name = "HostWindow";
             this.Text = "Tseng";
             this.TransparencyKey = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));

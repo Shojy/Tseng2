@@ -55,7 +55,7 @@ public static class Assets
     public static AssetMap CaitSithPortrait { get; } = new()
     {
         LgpArchiveFile = MenuLgp,
-        ExtractedFile = "character-cait-sith.png",
+        ExtractedFile = "character-caitsith.png",
         FileWithinLgp = "ketc.tex",
         ColorPalette = 0,
         CropXRatio = PortraitWidthRatio,
@@ -151,7 +151,7 @@ public static class Assets
     public static AssetMap RedXIIIPortrait { get; } = new()
     {
         LgpArchiveFile = MenuLgp,
-        ExtractedFile = "character-red-xiii.png",
+        ExtractedFile = "character-redxiii.png",
         FileWithinLgp = "red.tex",
         ColorPalette = 0,
         CropXRatio = PortraitWidthRatio,
@@ -343,7 +343,7 @@ public static class Assets
     public static AssetMap YoungCloudPortrait { get; } = new()
     {
         LgpArchiveFile = MenuLgp,
-        ExtractedFile = "character-young-cloud.png",
+        ExtractedFile = "character-youngcloud.png",
         FileWithinLgp = "pcloud.tex",
         ColorPalette = 0,
         CropXRatio = PortraitWidthRatio,

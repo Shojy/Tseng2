@@ -5,7 +5,7 @@
 
 @if (_hasData)
 {
-    <div class="ff7" style="background: rgb(@c.Average.R, @c.Average.G, @c.Average.B); box-sizing: border-box; margin: 4px;@(Fill? "width: calc(100% - 12px); height: calc(100% - 12px);" : "")">
+    <div class="ff7" style="background: rgb(@c.Average.R, @c.Average.G, @c.Average.B); box-sizing: border-box; margin: 4px;@(Fill? "width: calc(100% - 12px); height:auto; min-height: calc(100% - 12px);" : "")">
         <div class="layer border"
          style="background: linear-gradient(to top left, rgba(@c.TopLeft.R,@c.TopLeft.G,@c.TopLeft.B, 0) 50%, rgba(@c.TopLeft.R,@c.TopLeft.G,@c.TopLeft.B, 1)),
                             radial-gradient(farthest-side at top right, rgba(@c.TopRight.R,@c.TopRight.G,@c.TopRight.B, 1), rgba(@c.TopRight.R,@c.TopRight.G,@c.TopRight.B, 0)),
@@ -19,7 +19,7 @@
 }
 else
 {
-    <div class="ff7" style="background: rgb(0, 0, 117); box-sizing: border-box; margin: 4px;@(Fill? "width: calc(100% - 12px); height: calc(100% - 12px);" : "")">
+    <div class="ff7" style="background: rgb(0, 0, 117); box-sizing: border-box; margin: 4px;@(Fill? "width: calc(100% - 12px); height:auto; min-height: calc(100% - 12px);" : "")">
         <div class="layer border"></div>
         <div class="text">
             @ChildContent

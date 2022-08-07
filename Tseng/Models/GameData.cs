@@ -206,10 +206,13 @@ public class GameData : INotifyPropertyChanged
             MaxMP = record.MaxMp,
             Level = record.Level,
             Weapon = Weapons[record.Weapon],
+            WeaponMateria = record.WeaponMateria.Select(_ => _.Id == 0xFF ? new Materia() : _materias[_.Id]).ToArray(),
             Armor = Armors[record.Armor],
+            ArmorMateria = record.ArmorMateria.Select(_ => _.Id == 0xFF ? new Materia() : _materias[_.Id]).ToArray(),
             Accessory = record.Accessory < 255 ? Accessories[record.Accessory] : null,
             Image = $"/images/character-{member.ToString().ToLower()}.png",
-            Row = (record.Row & 0x1) == 0x1 ? "front" : "back"
+            Row = (record.Row & 0x1) == 0x1 ? "front" : "back",
+            Status = (StatusEffects) record.Flags
         };
     }
 
@@ -226,10 +229,13 @@ public class GameData : INotifyPropertyChanged
             MaxMP = actor.MaxMp,
             Level = actor.Level,
             Weapon = Weapons[record.Weapon],
+            WeaponMateria = record.WeaponMateria.Select(_ => _.Id == 0xFF? new Materia() : _materias[_.Id]).ToArray(),
             Armor = Armors[record.Armor],
+            ArmorMateria = record.ArmorMateria.Select(_ => _.Id == 0xFF ? new Materia() : _materias[_.Id]).ToArray(),
             Accessory = record.Accessory < 255 ? Accessories[record.Accessory] : null,
             Image = $"/images/character-{member.ToString().ToLower()}.png",
-            Row = actor.IsBackRow ? "back" : "front"
+            Row = actor.IsBackRow ? "back" : "front",
+            Status = actor.Status
         };
     }
 

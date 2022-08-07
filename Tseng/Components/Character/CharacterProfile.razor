@@ -1,9 +1,16 @@
-﻿
-@using Tseng.Models.Active
+﻿@using Tseng.Models.Active
+@using Timer = System.Threading.Timer
+@using Shojy.FF7.Reno.Models.Enums
+@using Shojy.FF7.Elena.Equipment
+@using System.Diagnostics
+@using System.ComponentModel
+@using Tseng.Services
 
-@if (HasData)
+@inject IGameService GameService
+
+@if (HasData && PartyMember.Weapon is not null)
 {
-    <div class="character @(PartyMember.CurrentHP == 0 ? "dead " : string.Empty) ">
+    <div class="character @(PartyMember.CurrentHP == 0 ? "dead " : string.Empty) @(PartyMember.IsLowHealth ? "hp-low " : string.Empty)">
         <div>
             <div class="@($"{PartyMember.Row}row") portrait">
                 <img src="@PartyMember.Image" />
@@ -12,44 +19,72 @@
                 <span class="name @(PartyMember.IsLucky ? "rainbow " : string.Empty)">@PartyMember.Name</span>
 
                 <span class="aqua">LV </span><span class="level">@PartyMember.Level</span> <span class="status"></span>
-                <span class="status">StatusEffects</span><br />
+                <span class="status">@_status</span><br />
                 <span class="aqua">HP </span>
-                <span class="current-hp @(PartyMember.IsLowHealth ? "hp-low " : string.Empty)">@PartyMember.CurrentHP</span> / <span class="max-hp">@PartyMember.MaxHP</span><br />
+                <span class="current-hp ">@PartyMember.CurrentHP</span> / <span class="max-hp">@PartyMember.MaxHP</span><br />
 
                 <span class="aqua">MP </span>
                 <span class="current-mp">@PartyMember.CurrentMP</span> / <span class="max-mp">@PartyMember.MaxMP</span><br />
+                
+                @if (_slide == equip)
+                {
+                    <div class="slide acive-slide">
 
-                @*                <div class="slide active-slide" v-if="slide === 'materia'">
-            <ul v-bind:class="'wpn slots ' + (data.weapon.growth === 0? 'no-growth' : '')">
-            <li v-for="slot in data.weapon.slots" v-bind:class="slot.type"><app-materia v-bind:type="slot.materia"></app-materia></li>
-            </ul>
-            <ul v-bind:class="'arm slots ' + (data.armor.growth === 0? 'no-growth' : '')">
-            <li v-for="slot in data.armor.slots" v-bind:class="slot.type"><app-materia v-bind:type="slot.materia"></app-materia></li>
-            </ul>
-            </div>*@
-                <div class="slide acive-slide">
+                        <span class="aqua fixed">Wpn. </span>
+                        <span class="weapon">
+                            <img src="images/weapon-@(PartyMember.WeaponType).png">
+                            @PartyMember.WeaponName
+                        </span><br />
 
-                    <span class="aqua fixed">Wpn. </span>
-                    <span class="weapon">
-                        <img src="images/weapon-@(PartyMember.WeaponType).png">
-                        @PartyMember.WeaponName
-                    </span><br />
+                        <span class="aqua fixed">Arm. </span>
+                        <span class="armlet">
+                            <img src="images/armlet.png">
+                            @PartyMember.ArmorName
+                        </span><br />
 
-                    <span class="aqua fixed">Arm. </span>
-                    <span class="armlet">
-                        <img src="images/armlet.png">
-                        @PartyMember.ArmorName
-                    </span><br />
+                        <span class="aqua fixed">Acc. </span>
+                        @if (PartyMember.Accessory is not null)
+                        {
+                            <span class="accessory">
+                                <img src="images/accessory.png">
+                                @PartyMember.AccessoryName
+                            </span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <ul class="wpn slots @(PartyMember.Weapon.GrowthRate == 0 ? "no-growth" : string.Empty)">
+                        @*@foreach (var slot in PartyMember.Weapon.MateriaSlots.Where(_ => _ != MateriaSlot.None))*@
+                        @for(var i = 0; i < 8; ++i)
+                        {
+                            @if (PartyMember.Weapon.MateriaSlots[i] is not MateriaSlot.None)
+                            {
+                                <li class="@Slot(PartyMember.Weapon.MateriaSlots[i])">
+                                    @if (!string.IsNullOrEmpty(PartyMember.WeaponMateria[i].Name))
+                                    {
+                                        <img src="/images/materia-@(PartyMember.WeaponMateria[i].MateriaType.ToString().ToLower()).png">
+                                    }
+                                </li>
+                            }
+                        }
 
-                    <span class="aqua fixed">Acc. </span>
-                    @if (PartyMember.Accessory is not null)
-                    {
-                        <span class="accessory">
-                            <img src="images/accessory.png">
-                            @PartyMember.AccessoryName
-                        </span>
-                    }
-                </div>
+                    </ul>
+                    <ul class="arm slots @(PartyMember.Armor.GrowthRate == 0? "no-growth" : string.Empty)">
+                        @for(var i = 0; i < 8; ++i)
+                        {
+                            @if (PartyMember.Armor.MateriaSlots[i] is not MateriaSlot.None)
+                            {
+                                <li class="@Slot(PartyMember.Armor.MateriaSlots[i])">
+                                    @if (!string.IsNullOrEmpty(PartyMember.ArmorMateria[i].Name))
+                                    {
+                                        <img src="/images/materia-@(PartyMember.ArmorMateria[i].MateriaType.ToString().ToLower()).png">
+                                    }
+                                </li>
+                            }
+                        }
+                    </ul>
+                }
             </div>
         </div>
     </div>
@@ -69,4 +104,89 @@ else
 
     [Parameter]
     public bool HasData { get; set; }
+
+    private string _status = string.Empty;
+    private string _slide = equip;
+
+    protected override Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+
+        _statuses = GetFlags(PartyMember.Status);
+        _display.Enqueue(equip);
+        _display.Enqueue(materia);
+
+        _timer = new Timer(AdvanceSlides, null, TimeSpan.Zero, TimeSpan.FromSeconds(3));
+
+        GameService.GameData.PropertyChanged += OnGameDataOnPropertyChanged;
+        
+        return Task.CompletedTask;
+
+    }
+
+    private async void OnGameDataOnPropertyChanged(object? o, PropertyChangedEventArgs propertyChangedEventArgs)
+    {
+        _statuses = GetFlags(PartyMember.Status);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    Timer? _timer;
+
+    private void AdvanceSlides(object? _)
+    {
+
+        _display.Enqueue(_display.Dequeue());
+        _slide = _display.Peek();
+        if (_statuses.Any())
+        {
+            _statuses.Enqueue(_statuses.Dequeue());
+            _status = _statuses.Peek();
+        }
+        else
+        {
+            _status = string.Empty;
+        }
+
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private string Slot(MateriaSlot slot)
+    {
+        return slot switch
+        {
+            MateriaSlot.EmptyUnlinkedSlot => "normal",
+            MateriaSlot.EmptyLeftLinkedSlot => "linked",
+            MateriaSlot.EmptyRightLinkedSlot => "linked",
+            MateriaSlot.NormalUnlinkedSlot => "normal",
+            MateriaSlot.NormalLeftLinkedSlot => "linked",
+            MateriaSlot.NormalRightLinkedSlot => "linked",
+
+            MateriaSlot.None => string.Empty,
+            _ => throw new ArgumentOutOfRangeException(nameof(slot), slot, null)
+        };
+    }
+
+    const string equip = nameof(equip);
+    const string materia = nameof(materia);
+    Queue<string> _statuses = new();
+    Queue<string> _display = new();
+
+    private static Queue<string> GetFlags(Enum input)
+    {
+        Queue<string> effects = new();
+
+        foreach (StatusEffects value in Enum.GetValues(input.GetType()))
+        {
+            // Skip "None" and "Death"
+            if (value is StatusEffects.None or StatusEffects.Death) continue;
+
+            if (input.HasFlag(value))
+            {
+                effects.Enqueue(value.ToString());
+            }
+        }
+
+        return effects;
+    }
 }

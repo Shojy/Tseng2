@@ -32,6 +32,13 @@
 body {
     margin: 0;
     padding: 0;
+    font-size: 20px;
+}
+*{
+    color: #eff1ff;
+    text-shadow: 2px 2px #212421, 1px 1px #212021;
+    font-family: Verdana, sans-serif;
+    font-weight: normal;
 }
 
 .ff7 {
@@ -66,14 +73,11 @@ body {
         width: auto;
     }
 
-        .ff7 .text * {
-            color: #eff1ff;
-            text-shadow: 2px 2px #212421, 1px 1px #212021;
-            font-family: Verdana, sans-serif;
-            font-size: 20px;
-            font-weight: normal;
-            margin: 5px 0;
-        }
+.ff7 .text *, .character, .character * {
+
+    margin: 5px 0;
+}
+
 
 .character {
     float: left;
@@ -144,7 +148,7 @@ body {
     list-style: none;
     float: left;
     position: relative;
-    background-image: url('images/slots-single-normal.png');
+    background-image: url('/images/slots-single-normal.png');
 }
 
     .slots li img {
@@ -154,23 +158,23 @@ body {
     }
 
 .slots.no-growth li {
-    background-image: url('images/slots-single-nothing.png');
+    background-image: url('/images/slots-single-nothing.png');
 }
 
 .slots li.linked:nth-child(odd) {
-    background-image: url('images/slots-linked-normal-left.png');
+    background-image: url('/images/slots-linked-normal-left.png');
 }
 
 .slots li.linked:nth-child(even) {
-    background-image: url('images/slots-linked-normal-right.png');
+    background-image: url('/images/slots-linked-normal-right.png');
 }
 
 .slots.no-growth li.linked:nth-child(odd) {
-    background-image: url('images/slots-linked-nothing-left.png');
+    background-image: url('/images/slots-linked-nothing-left.png');
 }
 
 .slots.no-growth li.linked:nth-child(even) {
-    background-image: url('images/slots-linked-nothing-right.png');
+    background-image: url('/images/slots-linked-nothing-right.png');
 }
 
 .weapon, .armlet, .accessory {
@@ -212,8 +216,13 @@ body {
     width: 60px;
 }
 
-.ff7 .text .character.dead * {
+.text .character.dead * {
     color: #ab0000;
+}
+
+.hp-low .current-hp, 
+.mp-low:not(.dead) .current-mp {
+    color: #ffa500;
 }
 
 .ff7 {

@@ -1,18 +1,33 @@
 ﻿using Shojy.FF7.Elena.Converters;
 using Shojy.FF7.Elena;
 using System.Drawing.Imaging;
+using Shojy.FF7.Reno;
 using Tseng.Models;
 
 namespace Tseng.Services;
 
 public interface IAssetExtractionService
 {
-
+    Task ExtractAllAssets();
 }
 
 public class AssetExtractionService : IAssetExtractionService
 {
-    
+    private readonly IFF7InteractionService _ff7InteractionService;
+
+    public AssetExtractionService(IFF7InteractionService ff7InteractionService)
+    {
+        _ff7InteractionService = ff7InteractionService;
+    }
+
+    public async Task ExtractAllAssets()
+    {
+
+        var ff7 = await _ff7InteractionService.ConnectToGame();
+        var ff7Folder = Path.GetDirectoryName(ff7.MainModule!.FileName)!;
+
+        AssetExtractor.ExtractAssets(ff7Folder);
+    }
 }
 
 public static class AssetExtractor
@@ -66,8 +81,10 @@ public static class AssetExtractor
             .ToList();
     }
 
-    public static void ExtractAssets(string ff7Path, IReadOnlyList<AssetMap> requiredAssets)
+    public static void ExtractAssets(string ff7Path, IReadOnlyList<AssetMap>? requiredAssets = null)
     {
+        requiredAssets ??= RequiredAssets;
+
         // Ensure containing directory is present
         Directory.CreateDirectory(AssetBaseLocation);
 

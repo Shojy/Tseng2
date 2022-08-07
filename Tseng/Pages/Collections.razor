@@ -1,28 +1,25 @@
-﻿@page "/party"
+﻿@page "/collections/{type}"
 @using Tseng.Models
 @using Tseng.Services
 @using System.ComponentModel
-@using Tseng.Components.Character
-@using Tseng.Models.Active
 
 @inject IGameService GameService;
 
-@if (!_isLoading)
+@if (!_isLoading && _gameData is not null)
 {
-    <FF7Window Fill="true">
-        <CharacterProfile PartyMember="@Party1" HasData="@(Party1.Level != 0)"/>
-        <CharacterProfile PartyMember="@Party2" HasData="@(Party2.Level != 0)"/>
-        <CharacterProfile PartyMember="@Party3" HasData="@(Party3.Level != 0)"/>
-    </FF7Window>
+
+    switch (Type.ToLower())
+    {
+        case "gil":
+            <span class="gil">@_gameData.SaveMap.Gil Gil</span>
+            break;
+    }
 }
 @code {
-    
+
     bool _isLoading;
-    
+
     GameData? _gameData;
-    Character Party1 => _gameData?.ActiveData.Party1 ?? new();
-    Character Party2 => _gameData?.ActiveData.Party2 ?? new();
-    Character Party3 => _gameData?.ActiveData.Party3 ?? new();
 
 
     protected override async Task OnInitializedAsync()
@@ -44,5 +41,14 @@
     private async void OnGameDataOnPropertyChanged(object? o, PropertyChangedEventArgs propertyChangedEventArgs)
     {
         await InvokeAsync(StateHasChanged);
+    }
+    [Parameter]
+    public string Type { get; set; }
+
+
+
+    private void GameDataOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
     }
 }
