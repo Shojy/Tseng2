@@ -1,6 +1,8 @@
 ﻿using Shojy.FF7.Elena.Equipment;
 using Shojy.FF7.Elena;
 using Shojy.FF7.Reno;
+using Shojy.FF7.Reno.Extensions;
+using Shojy.FF7.Reno.MemoryAddresses;
 using Tseng.Models;
 using Tseng.Models.Enums;
 using Timer = System.Threading.Timer;
@@ -40,9 +42,11 @@ public class GameService : IGameService
         GameData.UpdateGameState(GameState.Searching);
 
         _cancellationToken = cancellationToken;
+
         var ff7 = await _ff7InteractionService.ConnectToGame();
         var ff7Folder = Path.GetDirectoryName(ff7.MainModule!.FileName)!;
         var path = Path.Combine(ff7Folder, "data", "lang-en", "kernel");
+
         // Read Kernel Data
         var elena = new KernelReader(Path.Combine(path, "KERNEL.BIN"))
             .MergeKernel2Data(Path.Combine(path, "kernel2.bin"));
@@ -75,9 +79,25 @@ public class GameService : IGameService
 
     private void ScanGame(object? _)
     {
-        if (_ff7InteractionService.GetData(out var saveMap, out var battleMap))
+        if (_ff7InteractionService.GetData(out var saveMap, out var battleMap)
+            && _ff7InteractionService.GetData(MemoryLocations.ActiveBattleFlag, out var activeBattle)
+            && _ff7InteractionService.GetData(MemoryLocations.ActiveWindowColor, out var colors))
         {
-            GameData.UpdateData(saveMap, battleMap);
+            // set active window color
+            var color = MakeWindowColor(colors);
+
+            GameData.UpdateData(saveMap, battleMap, color, activeBattle[0] == 0x01);
         }
+    }
+
+    private static WindowColor MakeWindowColor(byte[] colors)
+    {
+        var color = new WindowColor(
+            TopLeft: Color.FromArgb(colors[0x2], colors[0x1], colors[0x0]),
+            TopRight: Color.FromArgb(colors[0xA], colors[0x9], colors[0x8]),
+            BottomLeft: Color.FromArgb(colors[0x6], colors[0x5], colors[0x4]),
+            BottomRight: Color.FromArgb(colors[0xE], colors[0xD], colors[0xC])
+        );
+        return color;
     }
 }

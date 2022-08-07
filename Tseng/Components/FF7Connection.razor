@@ -1,97 +1,57 @@
 ﻿@using Shojy.FF7.Reno
 @using Shojy.FF7.Reno.Models
+@using Shojy.FF7.Reno.Models.Enums
+@using Tseng.Services
+@using Tseng.Models
+@using System.ComponentModel
 @using Shojy.FF7.Elena
 @using Shojy.FF7.Elena.Equipment
 @using Shojy.FF7.Elena.Items
 @using Shojy.FF7.Elena.Sections
-@using Tseng.Models
-@using Tseng.Services
-@using System.ComponentModel
-@using Shojy.FF7.Reno.Models.Enums
+@using Tseng.Components.Character
+@using Tseng.Models.Enums
 
 @inject IFF7InteractionService InteractionService;
 @inject IGameService GameService;
 
-<style>
-    .list {
-        height: 500px;
-        overflow-y: auto;
-        width: 300px;
-        display: inline-block;
-    }
-</style>
-
-@if (_isLoading || _gameData is null)
+@if(_isLoading || _gameData is null) 
 {
-    <p>Connecting to game...</p>
-}
-else
+    <p>Loading...</p>
+} 
+else switch (_gameData.GameState)
 {
-    foreach (var p in Party)
-    {
-        <p>@p</p>
-
-    }
-
-    <div class="list">
-        <ul>
-            @foreach (var item in _gameData.Inventory)
-            {
-                <li>@(item.Quantity != 0 ? $"{item.Quantity}x  {item.Name}" : "")</li>
-            }
-        </ul>
-    </div>
-
-    <div class="list">
-        <ul>
-            @foreach (var item in _gameData.Materia)
-            {
-                <li>@($"{item.Type}: {item.Name}")</li>
-            }
-        </ul>
-    </div>
-
-    <div class="list">
-        <ul>
-            @foreach (var ki in Enum.GetValues<KeyItems>())
-            {
-                if (SaveMap.KeyItems.HasFlag(ki))
-                {
-                <li>@($"{ki.ToString()}")</li>
-                }
-                
-            }
-        </ul>
-    </div>
+    case GameState.Disconnected:
+        <p>Disconnected</p>
+        break;
+    case GameState.Searching:
+        <p>Connecting to game...</p>
+        break;
+    case GameState.Connected:
+        <p>Game Connected</p>
+        break;
+    default:
+        <p>Unknown state</p>
+        break;
 }
 
 @code {
-    string[] Party => new[]
-    {
-        SaveMap.PartyMember1.ToString(),
-        SaveMap.PartyMember2.ToString(),
-        SaveMap.PartyMember3.ToString(),
-    };
 
     bool _isLoading = false;
 
     SaveMap SaveMap => _gameData!.SaveMap;
     BattleMap BattleMap => _gameData!.BattleMap;
     GameData? _gameData;
-
     
     protected override async Task OnInitializedAsync()
     {
         _isLoading = true;
         _gameData = GameService.GameData;
         GameService.GameData.PropertyChanged += OnGameDataOnPropertyChanged;
-
-
-        var tokenSource = new CancellationTokenSource();
         
+        var tokenSource = new CancellationTokenSource();
+
         await GameService.StartMonitoring(tokenSource.Token);
         _isLoading = false;
-
     }
 
     private async void OnGameDataOnPropertyChanged(object? o, PropertyChangedEventArgs propertyChangedEventArgs)

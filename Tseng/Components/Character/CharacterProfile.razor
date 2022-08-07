@@ -1,0 +1,72 @@
+﻿
+@using Tseng.Models.Active
+
+@if (HasData)
+{
+    <div class="character @(PartyMember.CurrentHP == 0 ? "dead " : string.Empty) ">
+        <div>
+            <div class="@($"{PartyMember.Row}row") portrait">
+                <img src="@PartyMember.Image" />
+            </div>
+            <div class="stats">
+                <span class="name @(PartyMember.IsLucky ? "rainbow " : string.Empty)">@PartyMember.Name</span>
+
+                <span class="aqua">LV </span><span class="level">@PartyMember.Level</span> <span class="status"></span>
+                <span class="status">StatusEffects</span><br />
+                <span class="aqua">HP </span>
+                <span class="current-hp @(PartyMember.IsLowHealth ? "hp-low " : string.Empty)">@PartyMember.CurrentHP</span> / <span class="max-hp">@PartyMember.MaxHP</span><br />
+
+                <span class="aqua">MP </span>
+                <span class="current-mp">@PartyMember.CurrentMP</span> / <span class="max-mp">@PartyMember.MaxMP</span><br />
+
+                @*                <div class="slide active-slide" v-if="slide === 'materia'">
+            <ul v-bind:class="'wpn slots ' + (data.weapon.growth === 0? 'no-growth' : '')">
+            <li v-for="slot in data.weapon.slots" v-bind:class="slot.type"><app-materia v-bind:type="slot.materia"></app-materia></li>
+            </ul>
+            <ul v-bind:class="'arm slots ' + (data.armor.growth === 0? 'no-growth' : '')">
+            <li v-for="slot in data.armor.slots" v-bind:class="slot.type"><app-materia v-bind:type="slot.materia"></app-materia></li>
+            </ul>
+            </div>*@
+                <div class="slide acive-slide">
+
+                    <span class="aqua fixed">Wpn. </span>
+                    <span class="weapon">
+                        <img src="images/weapon-@(PartyMember.WeaponType).png">
+                        @PartyMember.WeaponName
+                    </span><br />
+
+                    <span class="aqua fixed">Arm. </span>
+                    <span class="armlet">
+                        <img src="images/armlet.png">
+                        @PartyMember.ArmorName
+                    </span><br />
+
+                    <span class="aqua fixed">Acc. </span>
+                    @if (PartyMember.Accessory is not null)
+                    {
+                        <span class="accessory">
+                            <img src="images/accessory.png">
+                            @PartyMember.AccessoryName
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="character"></div>
+}
+
+
+
+
+
+@code {
+    [Parameter]
+    public Character PartyMember { get; set; }
+
+    [Parameter]
+    public bool HasData { get; set; }
+}

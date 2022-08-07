@@ -55,7 +55,9 @@ body {
     }
 
     .ff7 .layer {
-        background: linear-gradient(to top left, rgba(0,0,176, 0) 50%, rgba(0,0,176, 1)), radial-gradient(farthest-side at top right, rgba(0, 0, 80, 1), rgba(0, 0, 80, 0)), radial-gradient(farthest-side at bottom left, rgba(0, 0, 128, 1), rgba(0, 0, 128, 0)), linear-gradient(to bottom right, rgba(0, 0, 32, 0) 50%, rgba(0, 0, 32, 1));
+        background: 
+                  rgb(0, 0, 117)
+                  linear-gradient(to top left, rgba(0,0,176, 0) 50%, rgba(0,0,176, 1)), radial-gradient(farthest-side at top right, rgba(0, 0, 80, 1), rgba(0, 0, 80, 0)), radial-gradient(farthest-side at bottom left, rgba(0, 0, 128, 1), rgba(0, 0, 128, 0)), linear-gradient(to bottom right, rgba(0, 0, 32, 0) 50%, rgba(0, 0, 32, 1));
     }
 
     .ff7 .text {

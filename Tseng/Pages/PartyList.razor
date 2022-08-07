@@ -1,0 +1,46 @@
+﻿@page "/party"
+@using Tseng.Models
+@using Tseng.Services
+@using System.ComponentModel
+@using Shojy.FF7.Reno
+@using Tseng.Components.Character
+
+@inject IFF7InteractionService InteractionService;
+@inject IGameService GameService;
+
+@if (!_isLoading)
+{
+    <FF7Window Fill="true">
+        <CharacterProfile PartyMember="@_gameData!.ActiveData.Party1" HasData="@(_gameData!.ActiveData.Party1.Level != 0)"/>
+        <CharacterProfile PartyMember="@_gameData!.ActiveData.Party2" HasData="@(_gameData!.ActiveData.Party2.Level != 0)"/>
+        <CharacterProfile PartyMember="@_gameData!.ActiveData.Party3" HasData="@(_gameData!.ActiveData.Party3.Level != 0)"/>
+    </FF7Window>
+}
+@code {
+    
+    bool _isLoading;
+    
+    GameData? _gameData;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (_isLoading) return;
+
+        _isLoading = true;
+        _gameData = GameService.GameData;
+        GameService.GameData.PropertyChanged += OnGameDataOnPropertyChanged;
+
+
+        var tokenSource = new CancellationTokenSource();
+
+        await GameService.StartMonitoring(tokenSource.Token);
+        _isLoading = false;
+
+    }
+
+    private async void OnGameDataOnPropertyChanged(object? o, PropertyChangedEventArgs propertyChangedEventArgs)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+}

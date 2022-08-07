@@ -368,7 +368,4 @@ public static class Assets
     private const string MenuLgp = "data/menu/menu_us.lgp";
     private const decimal PortraitHeightRatio = 96 / 128m;
     private const decimal PortraitWidthRatio = 84 / 128m;
-    public static string AssetBaseLocation { get; } = Path.Combine("wwwroot", "images");
-
-    public static string AssetStagingLocation { get; } = Path.Combine("wwwroot", "staging");
 }

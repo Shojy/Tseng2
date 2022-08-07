@@ -1,0 +1,53 @@
+﻿@using Tseng.Services
+@using System.ComponentModel
+@using Tseng.Models
+@inject IGameService GameService
+
+@if (_hasData)
+{
+    <div class="ff7" style="background: rgb(@c.Average.R, @c.Average.G, @c.Average.B); box-sizing: border-box; margin: 4px;@(Fill? "width: calc(100% - 12px); height: calc(100% - 12px);" : "")">
+        <div class="layer border"
+         style="background: linear-gradient(to top left, rgba(@c.TopLeft.R,@c.TopLeft.G,@c.TopLeft.B, 0) 50%, rgba(@c.TopLeft.R,@c.TopLeft.G,@c.TopLeft.B, 1)),
+                            radial-gradient(farthest-side at top right, rgba(@c.TopRight.R,@c.TopRight.G,@c.TopRight.B, 1), rgba(@c.TopRight.R,@c.TopRight.G,@c.TopRight.B, 0)),
+                            radial-gradient(farthest-side at bottom left, rgba(@c.BottomLeft.R,@c.BottomLeft.G,@c.BottomLeft.B,1), rgba(@c.BottomLeft.R,@c.BottomLeft.G,@c.BottomLeft.B, 0)),
+                            linear-gradient(to bottom right, rgba(@c.BottomRight.R,@c.BottomRight.G,@c.BottomRight.B, 0) 50%, rgba(@c.BottomRight.R,@c.BottomRight.G,@c.BottomRight.B, 1));
+            "></div>
+        <div class="text">
+            @ChildContent
+        </div>
+    </div>
+}
+else
+{
+    <div class="ff7" style="background: rgb(0, 0, 117); box-sizing: border-box; margin: 4px;@(Fill? "width: calc(100% - 12px); height: calc(100% - 12px);" : "")">
+        <div class="layer border"></div>
+        <div class="text">
+            @ChildContent
+        </div>
+    </div>
+}
+
+@code {
+    WindowColor c;
+
+    bool _hasData = false;
+    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool Fill { get; set; } = false;
+
+    protected override Task OnInitializedAsync()
+    {
+        GameService.GameData.PropertyChanged += GameDataOnPropertyChanged;
+        return Task.CompletedTask;
+    }
+
+    private void GameDataOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        c = GameService.GameData.WindowColor;
+        _hasData = true;
+        InvokeAsync(StateHasChanged);
+    }
+}

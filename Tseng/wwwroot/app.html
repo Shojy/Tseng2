@@ -7,6 +7,17 @@
     <base href="/" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="WinFormsBlazor.styles.css" rel="stylesheet" />
+
+    <script>
+        window.clipboardCopy = {
+            copyText: function (text) {
+                navigator.clipboard.writeText(text)
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            }
+        };
+    </script>
 </head>
 
 <body>
