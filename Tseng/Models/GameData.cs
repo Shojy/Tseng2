@@ -20,6 +20,7 @@ public class GameData : INotifyPropertyChanged
     private WindowColor _windowColor;
     private bool _isBattle;
     private ActiveGameData _activeData;
+    private string _playTime;
 
     public ActiveGameData ActiveData
     {
@@ -47,6 +48,18 @@ public class GameData : INotifyPropertyChanged
             if (value == _battleMap) return;
 
             _battleMap = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string PlayTime
+    {
+        get => _playTime;
+        private set
+        {
+            if (value == _playTime) return;
+
+            _playTime = value;
             OnPropertyChanged();
         }
     }
@@ -151,15 +164,16 @@ public class GameData : INotifyPropertyChanged
         _materias = materias;
     }
 
-    public void UpdateData(SaveMap saveMap, BattleMap battleMap, WindowColor windowColor, bool isBattle)
+    public void UpdateData(SaveMap saveMap, BattleMap battleMap, WindowColor windowColor, bool isBattle, int playTimeSeconds)
     {
         SaveMap = saveMap;
         BattleMap = battleMap;
         WindowColor = windowColor;
         IsBattle = isBattle;
-
+        PlayTime = $"{playTimeSeconds / 3600:00}, {(playTimeSeconds % 3600) / 60:00}, {playTimeSeconds % 60:00})";
         UpdateActiveData();
     }
+
 
     private void UpdateActiveData()
     {

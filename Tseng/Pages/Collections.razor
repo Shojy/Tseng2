@@ -1,4 +1,5 @@
 ﻿@page "/collections/{type}"
+@page "/stats/{type}"
 @using Tseng.Models
 @using Tseng.Services
 @using System.ComponentModel
@@ -12,6 +13,12 @@
     {
         case "gil":
             <span class="gil">@_gameData.SaveMap.Gil Gil</span>
+            break;
+        case "disc":
+            <span class="disc">Disc @_gameData.SaveMap.GameDisc / 3</span>
+            break;
+        case "time":
+            <span class="time">@_gameData.PlayTime</span>
             break;
     }
 }
@@ -44,11 +51,4 @@
     }
     [Parameter]
     public string Type { get; set; }
-
-
-
-    private void GameDataOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        InvokeAsync(StateHasChanged);
-    }
 }

@@ -3,6 +3,7 @@ using Shojy.FF7.Elena;
 using Shojy.FF7.Reno;
 using Shojy.FF7.Reno.Extensions;
 using Shojy.FF7.Reno.MemoryAddresses;
+using Shojy.FF7.Reno.MemoryAddresses.Offsets;
 using Tseng.Models;
 using Tseng.Models.Enums;
 using Timer = System.Threading.Timer;
@@ -79,14 +80,15 @@ public class GameService : IGameService
 
     private void ScanGame(object? _)
     {
+        _ff7InteractionService.GetData(new(new(SaveMapOffsets.NumberOfSecondsPlayed), 4), out var time);
         if (_ff7InteractionService.GetData(out var saveMap, out var battleMap)
             && _ff7InteractionService.GetData(MemoryLocations.ActiveBattleFlag, out var activeBattle)
+            
             && _ff7InteractionService.GetData(MemoryLocations.ActiveWindowColor, out var colors))
         {
             // set active window color
             var color = MakeWindowColor(colors);
-
-            GameData.UpdateData(saveMap, battleMap, color, activeBattle[0] == 0x01);
+            GameData.UpdateData(saveMap, battleMap, color, activeBattle[0] == 0x01, BitConverter.ToInt32(time));
         }
     }
 

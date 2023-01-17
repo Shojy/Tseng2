@@ -9,6 +9,10 @@
         background: #454545;
     }
 
+    button {
+        background: #454545;
+    }
+
     label {
         width: 200px;
         display: inline-block;
@@ -27,6 +31,10 @@
         <div style="text-align:center">
             <FF7Connection />
         </div>
+        
+        <p>
+            <a href="party">View Party</a>
+        </p>
 
         @*<h2>Setup</h2>
         <hr />
@@ -37,57 +45,46 @@
 
         <h2 style="margin-top: 30px;">Ready to Use OBS Components</h2>
         <hr />
-        <label>
-            Party List
-        </label>
-        <input type="text" readonly="readonly" value="http://localhost:7777/party" />
-        <button @onclick="CopyPartyLink">Copy</button>
+        @foreach (var link in _componentsLinks)
+        {
+            <label>@link.Key</label>
+            <input type="text" readonly="readonly" value="@link.Value" />
+            <button @onclick="async () => await CopyTextToClipboard(link.Value)">Copy</button>
+            <br />
+        }
 
 
         <h2 style="margin-top: 30px;">Bits (Compose your own layout!)</h2>
         <hr />
-        <label>
-            Window
-        </label>
-        <input type="text" readonly="readonly" value="http://localhost:7777/window" />
-        <button @onclick="CopyWindowLink">Copy</button>
-
-        <br />
-        <label>
-            Party member 1
-        </label>
-        <input type="text" readonly="readonly" value="http://localhost:7777/party/1" />
-        <button @onclick="CopyParty1Link">Copy</button>
-        <br />
-        <label>
-            Party member 2
-        </label>
-        <input type="text" readonly="readonly" value="http://localhost:7777/party/2" />
-        <button @onclick="CopyParty2Link">Copy</button>
-        <br />
-        <label>
-            Party member 3
-        </label>
-        <input type="text" readonly="readonly" value="http://localhost:7777/party/3" />
-        <button @onclick="CopyParty3Link">Copy</button>
-        <br />
-        <label>
-            Gil
-        </label>
-        <input type="text" readonly="readonly" value="http://localhost:7777/collections/gil" />
-        <button @onclick="CopyGilLink">Copy</button>
+        
+        @foreach (var link in _bitsLinks)
+        {
+            <label>@link.Key</label>
+            <input type="text" readonly="readonly" value="@link.Value" />
+            <button @onclick="async () => await CopyTextToClipboard(link.Value)">Copy</button>
+            <br />
+        }
     </FF7Window>
 </div>
 
 
 @code
 {
-    private async Task CopyPartyLink() => await CopyTextToClipboard("http://localhost:7777/party");
-    private async Task CopyParty1Link() => await CopyTextToClipboard("http://localhost:7777/party/1");
-    private async Task CopyParty2Link() => await CopyTextToClipboard("http://localhost:7777/party/2");
-    private async Task CopyParty3Link() => await CopyTextToClipboard("http://localhost:7777/party/3");
-    private async Task CopyGilLink() => await CopyTextToClipboard("http://localhost:7777/collections/gil");
-    private async Task CopyWindowLink() => await CopyTextToClipboard("http://localhost:7777/window");
+
+    private Dictionary<string, string> _bitsLinks = new()
+    {
+        {"Window", "http://localhost:7777/window"},
+        {"Party Member 1", "http://localhost:7777/party/1"},
+        {"Party Member 2", "http://localhost:7777/party/2"},
+        {"Party Member 3", "http://localhost:7777/party/3"},
+        {"Gil", "http://localhost:7777/collections/gil"},
+        {"Disc", "http://localhost:7777/stats/disc"},
+        {"Play Time", "http://localhost:7777/stats/time"},
+    };
+    private Dictionary<string, string> _componentsLinks = new()
+    {
+        {"Party", "http://localhost:7777/party"},
+    };
 
     private async Task CopyTextToClipboard(string text)
     {

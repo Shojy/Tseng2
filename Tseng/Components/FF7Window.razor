@@ -38,13 +38,16 @@ else
     [Parameter]
     public bool Fill { get; set; } = false;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        GameService.GameData.PropertyChanged += GameDataOnPropertyChanged;
-        return Task.CompletedTask;
+        GameService.GameData.PropertyChanged += OnGameDataOnPropertyChanged;
+        
+        var tokenSource = new CancellationTokenSource();
+
+        await GameService.StartMonitoring(tokenSource.Token);
     }
 
-    private void GameDataOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void OnGameDataOnPropertyChanged(object? o, PropertyChangedEventArgs propertyChangedEventArgs)
     {
         c = GameService.GameData.WindowColor;
         _hasData = true;

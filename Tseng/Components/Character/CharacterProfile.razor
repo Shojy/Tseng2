@@ -6,9 +6,8 @@
 @using System.ComponentModel
 @using Tseng.Services
 
-@inject IGameService GameService
 
-@if (HasData && PartyMember.Weapon is not null)
+@if (HasData && !string.IsNullOrEmpty(PartyMember.Name))
 {
     <div class="character @(PartyMember.CurrentHP == 0 ? "dead " : string.Empty) @(PartyMember.IsLowHealth ? "hp-low " : string.Empty)">
         <div>
@@ -91,7 +90,7 @@
 }
 else
 {
-    <div class="character"></div>
+    <div class="character empty-character"></div>
 }
 
 
@@ -118,7 +117,7 @@ else
 
         _timer = new Timer(AdvanceSlides, null, TimeSpan.Zero, TimeSpan.FromSeconds(3));
 
-        GameService.GameData.PropertyChanged += OnGameDataOnPropertyChanged;
+        //GameService.GameData.PropertyChanged += OnGameDataOnPropertyChanged;
         
         return Task.CompletedTask;
 

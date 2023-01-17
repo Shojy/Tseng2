@@ -1,3 +1,4 @@
+using Tseng.Extensions;
 using Tseng.Startup;
 
 namespace Tseng
