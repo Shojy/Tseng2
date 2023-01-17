@@ -18,7 +18,7 @@ namespace Tseng
             BlazorView.Services = services.BuildServiceProvider();
             BlazorView.RootComponents.Add<App>("#app");
 
-            BlazorView.SetDefaultBackgroundColor(Color.Transparent);
+            //BlazorView.SetDefaultBackgroundColor(Color.Transparent);
         }
     }
 }
